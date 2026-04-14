@@ -1,0 +1,63 @@
+/* ── Navbar ──────────────────────────────────────────────────────────────── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h); background: var(--surface);
+  border-bottom: 1px solid var(--border); box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 1rem; padding: 0 1.25rem;
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: 1.15rem; font-weight: 800; color: var(--primary);
+  white-space: nowrap; flex-shrink: 0;
+}
+.nav-brand i { font-size: 1.3rem; }
+
+/* ── Search area ─────────────────────────────────────────────────────────── */
+.nav-search {
+  flex: 1; display: flex; align-items: center; gap: .5rem;
+  min-width: 0; max-width: 600px;
+}
+.search-wrap       { flex: 1; position: relative; min-width: 0; }
+.search-icon       { position: absolute; left: .75rem; top: 50%;
+                     transform: translateY(-50%); color: var(--text-muted);
+                     pointer-events: none; font-size: .875rem; }
+.search-wrap input { padding: .55rem .75rem .55rem 2.2rem; border-radius: 20px;
+                     border: 1.5px solid var(--border); width: 100%; background: var(--bg); }
+.search-wrap input:focus { background: var(--surface); border-color: var(--primary); }
+.nav-search select { padding: .55rem .75rem; border-radius: 20px;
+                     border: 1.5px solid var(--border); background: var(--bg);
+                     width: 170px; flex-shrink: 0; padding-right: 1.8rem; }
+
+/* ── Action buttons ──────────────────────────────────────────────────────── */
+.nav-actions { display: flex; align-items: center; gap: .35rem; flex-shrink: 0; }
+.nav-btn {
+  display: flex; align-items: center; gap: .35rem;
+  padding: .45rem .75rem; border-radius: 8px;
+  font-weight: 500; font-size: .85rem; color: var(--text);
+  transition: background .15s; white-space: nowrap;
+}
+.nav-btn:hover    { background: var(--bg); }
+.nav-btn-add      { background: var(--primary); color: #fff; }
+.nav-btn-add:hover{ background: var(--primary-dark); }
+
+/* ── Profile dropdown ────────────────────────────────────────────────────── */
+.profile-wrap { position: relative; }
+.profile-dropdown {
+  display: none; position: absolute; right: 0; top: calc(100% + 8px);
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  min-width: 200px; z-index: 200; overflow: hidden;
+}
+.profile-dropdown.open { display: block; }
+.profile-info         { padding: .75rem 1rem; }
+.profile-info strong  { display: block; font-weight: 600; }
+.profile-info small   { display: block; color: var(--text-muted); font-size: .8rem; }
+.profile-dropdown hr  { border: none; border-top: 1px solid var(--border); }
+.profile-dropdown button {
+  display: flex; align-items: center; gap: .5rem;
+  width: 100%; padding: .6rem 1rem; font-size: .875rem;
+  color: var(--text); transition: background .15s;
+}
+.profile-dropdown button:hover { background: var(--bg); }
+.logout-btn { color: var(--danger) !important; }

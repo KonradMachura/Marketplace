@@ -1,0 +1,24 @@
+/* ── Auth pages (login / register) ──────────────────────────────────────── */
+.auth-body {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+}
+
+.auth-card {
+  background: var(--surface); border-radius: 16px;
+  padding: 2.5rem 2rem; width: 100%; max-width: 420px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-logo {
+  display: flex; align-items: center; gap: .6rem;
+  margin-bottom: 1.5rem; font-size: 1.3rem;
+  font-weight: 700; color: var(--primary);
+}
+.auth-logo i { font-size: 1.6rem; }
+
+.auth-card h2      { font-size: 1.5rem; font-weight: 700; margin-bottom: .25rem; }
+.auth-subtitle     { color: var(--text-muted); margin-bottom: 1.5rem; font-size: .9rem; }
+.auth-footer       { margin-top: 1.25rem; text-align: center;
+                     font-size: .875rem; color: var(--text-muted); }

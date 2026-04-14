@@ -1,0 +1,41 @@
+/* ── Primary button ──────────────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--primary); color: #fff; padding: .65rem 1.25rem;
+  border-radius: var(--radius); font-weight: 600;
+  display: inline-flex; align-items: center; gap: .4rem;
+  transition: background .15s, transform .1s;
+}
+.btn-primary:hover  { background: var(--primary-dark); }
+.btn-primary:active { transform: scale(.98); }
+.btn-full           { width: 100%; justify-content: center; padding: .75rem; }
+
+/* ── Secondary button ────────────────────────────────────────────────────── */
+.btn-secondary {
+  background: transparent; color: var(--text); padding: .65rem 1.25rem;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  font-weight: 500; transition: background .15s;
+}
+.btn-secondary:hover { background: var(--bg); }
+
+/* ── Icon button ─────────────────────────────────────────────────────────── */
+.btn-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text-muted); transition: background .15s, color .15s;
+}
+.btn-icon:hover { background: var(--bg); color: var(--text); }
+
+/* ── Error banner ────────────────────────────────────────────────────────── */
+.error-banner {
+  background: #fef2f2; border: 1px solid #fecaca; color: var(--danger);
+  padding: .65rem .9rem; border-radius: var(--radius);
+  font-size: .875rem; margin-bottom: .75rem;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+  border-radius: 50%; animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

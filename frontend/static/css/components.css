@@ -1,0 +1,21 @@
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 3rem 1rem;
+  color: var(--text-muted); gap: .75rem; text-align: center;
+}
+.empty-state i { font-size: 2.5rem; opacity: .4; }
+.empty-state p { font-size: .9rem; }
+
+/* ── Toast notification ──────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  background: #1e293b; color: #fff;
+  padding: .7rem 1.1rem; border-radius: 10px;
+  font-size: .875rem; font-weight: 500;
+  box-shadow: var(--shadow-lg); opacity: 0; transition: opacity .3s;
+  pointer-events: none; z-index: 9999; max-width: 300px;
+}
+.toast.show    { opacity: 1; }
+.toast.success { background: var(--success); }
+.toast.error   { background: var(--danger); }

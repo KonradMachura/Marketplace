@@ -1,8 +1,9 @@
 import os
+import flask_migrate
 from flask import Flask
 
 from config import Config
-from extensions import db, jwt
+from extensions import db, jwt, migrate
 from routes.pages import pages_bp
 from routes.auth import auth_bp
 from routes.offers import offers_bp
@@ -18,6 +19,7 @@ def create_app(config_class=Config):
         __name__,
         template_folder=os.path.join(_FRONTEND_DIR, 'templates'),
         static_folder=os.path.join(_FRONTEND_DIR, 'static'),
+        instance_path=os.path.join(_BACKEND_DIR, 'instance'),
     )
     app.config.from_object(config_class)
 
@@ -27,6 +29,7 @@ def create_app(config_class=Config):
 
     # Initialise extensions
     db.init_app(app)
+    migrate.init_app(app, db, directory=os.path.join(_BACKEND_DIR, 'migrations'))  # must follow db.init_app
     jwt.init_app(app)
 
     # Register blueprints
@@ -41,5 +44,5 @@ def create_app(config_class=Config):
 if __name__ == '__main__':
     app = create_app()
     with app.app_context():
-        db.create_all()
+        flask_migrate.upgrade()   # creates DB on fresh checkout; no-op if already up to date
     app.run(debug=Config.DEBUG, port=Config.PORT)
