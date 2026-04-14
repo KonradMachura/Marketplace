@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace – Login</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="auth-body">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <i class="fa-solid fa-store"></i>
+      <span>Marketplace</span>
+    </div>
+    <h2>Welcome back</h2>
+    <p class="auth-subtitle">Sign in to your account</p>
+
+    <div id="error-banner" class="error-banner" style="display:none"></div>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-icon">
+          <i class="fa-regular fa-envelope"></i>
+          <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary btn-full" id="submit-btn">
+        <span id="btn-text">Sign In</span>
+        <span id="btn-spinner" class="spinner" style="display:none"></span>
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Don't have an account? <a href="/register">Create one</a>
+    </p>
+  </div>
+
+  <script>
+    // Redirect if already logged in
+    if (localStorage.getItem('token')) {
+      window.location.href = '/marketplace';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const banner   = document.getElementById('error-banner');
+      const btnText  = document.getElementById('btn-text');
+      const spinner  = document.getElementById('btn-spinner');
+
+      banner.style.display = 'none';
+      btnText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+
+      try {
+        const res  = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          banner.textContent = data.error || 'Login failed.';
+          banner.style.display = 'block';
+        } else {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          window.location.href = '/marketplace';
+        }
+      } catch {
+        banner.textContent = 'Network error. Please try again.';
+        banner.style.display = 'block';
+      } finally {
+        btnText.style.display = 'inline';
+        spinner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
