@@ -39,6 +39,7 @@ function renderMessages(msgs, conv) {
     return;
   }
   msgs.forEach(m => wrap.appendChild(makeMessageEl(m, conv)));
+  renderFinalizePurchaseBar(msgs, conv);
 
   if (wasAtBottom || wrap.scrollTop === 0) wrap.scrollTop = wrap.scrollHeight;
 }
@@ -133,6 +134,73 @@ async function sendPriceOffer() {
   } catch (e) {
     errEl.textContent   = e.message;
     errEl.style.display = 'block';
+  }
+}
+
+// ── Finalize Purchase ─────────────────────────────────────────────────────────
+function renderFinalizePurchaseBar(msgs, conv) {
+  const bar = document.getElementById('finalize-bar');
+  if (!state.currentUser || state.currentUser.id !== conv.buyer_id) {
+    bar.style.display = 'none'; return;
+  }
+  if (conv.has_purchase) { bar.style.display = 'none'; return; }
+
+  const accepted = msgs.find(m => m.message_type === 'price_offer' && m.price_status === 'accepted');
+  if (!accepted) { bar.style.display = 'none'; return; }
+
+  document.getElementById('finalize-bar-price').textContent = '$' + fmtPrice(accepted.price_amount);
+  bar.style.display = 'flex';
+}
+
+function openFinalizePurchaseModal() {
+  document.getElementById('fp-payment').value               = '';
+  document.getElementById('fp-delivery').value              = '';
+  document.getElementById('fp-address').value               = '';
+  document.getElementById('fp-notes').value                 = '';
+  document.getElementById('fp-address-group').style.display = 'none';
+  document.getElementById('finalize-modal-error').style.display = 'none';
+  openModal('finalize-modal');
+}
+
+function onFpDeliveryChange() {
+  const isShipping = document.getElementById('fp-delivery').value === 'Shipping';
+  document.getElementById('fp-address-group').style.display = isShipping ? '' : 'none';
+}
+
+async function submitFinalizePurchase() {
+  const errEl    = document.getElementById('finalize-modal-error');
+  const payment  = document.getElementById('fp-payment').value;
+  const delivery = document.getElementById('fp-delivery').value;
+  const address  = document.getElementById('fp-address').value.trim();
+  const notes    = document.getElementById('fp-notes').value.trim();
+  const btn      = document.getElementById('finalize-submit-btn');
+
+  errEl.style.display = 'none';
+  if (!payment)  { errEl.textContent = 'Please select a payment method.';  errEl.style.display = 'block'; return; }
+  if (!delivery) { errEl.textContent = 'Please select a delivery method.'; errEl.style.display = 'block'; return; }
+  if (delivery === 'Shipping' && !address) {
+    errEl.textContent = 'Delivery address is required for Shipping.';
+    errEl.style.display = 'block'; return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Processing…';
+  try {
+    await api('POST', '/purchases', {
+      conversation_id:  state.activeConvId,
+      payment_method:   payment,
+      delivery_method:  delivery,
+      delivery_address: address,
+      notes,
+    });
+    closeModal('finalize-modal');
+    await loadChat(state.activeConvId);
+    toast('Purchase finalized! View it in your Profile.', 'success');
+  } catch (e) {
+    errEl.textContent   = e.message;
+    errEl.style.display = 'block';
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Confirm Purchase';
   }
 }
 

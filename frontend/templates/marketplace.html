@@ -58,6 +58,7 @@
           </div>
           <hr>
           <button onclick="filterMyOffers()"><i class="fa-solid fa-tag"></i> My Offers</button>
+          <button onclick="goToProfile()"><i class="fa-solid fa-user-gear"></i> My Profile</button>
           <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
         </div>
       </div>
@@ -108,6 +109,15 @@
           </button>
         </div>
         <div class="messages-wrap" id="messages-wrap"></div>
+        <div id="finalize-bar" style="display:none">
+          <div class="finalize-bar-info">
+            <i class="fa-solid fa-circle-check"></i>
+            Price offer accepted: <strong id="finalize-bar-price"></strong>
+          </div>
+          <button class="btn-primary btn-sm" onclick="openFinalizePurchaseModal()">
+            <i class="fa-solid fa-bag-shopping"></i> Finalize Purchase
+          </button>
+        </div>
         <div class="message-input">
           <input type="text" id="msg-input" placeholder="Type a message…"
                  onkeydown="if(event.key==='Enter')sendMessage()">
@@ -277,6 +287,45 @@
       </div>
       <div class="modal-footer">
         <button class="btn-primary" onclick="closeModal('help-modal')">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FINALIZE PURCHASE MODAL ──────────────────────────────────── -->
+  <div class="modal-overlay" id="finalize-modal" onclick="overlayClose(event,'finalize-modal')">
+    <div class="modal-box modal-narrow">
+      <button class="modal-close" onclick="closeModal('finalize-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3><i class="fa-solid fa-bag-shopping"></i> Finalize Purchase</h3>
+      <p class="modal-hint">Select payment and delivery options to complete the purchase.</p>
+      <div class="form-group">
+        <label>Payment Method <span class="req">*</span></label>
+        <select id="fp-payment">
+          <option value="">Select…</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Cash">Cash</option>
+          <option value="PayPal">PayPal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Delivery Method <span class="req">*</span></label>
+        <select id="fp-delivery" onchange="onFpDeliveryChange()">
+          <option value="">Select…</option>
+          <option value="Shipping">Shipping</option>
+          <option value="In-Person Pickup">In-Person Pickup</option>
+        </select>
+      </div>
+      <div class="form-group" id="fp-address-group" style="display:none">
+        <label>Delivery Address <span class="req">*</span></label>
+        <input type="text" id="fp-address" placeholder="Full shipping address">
+      </div>
+      <div class="form-group">
+        <label>Notes <span class="optional">(optional)</span></label>
+        <textarea id="fp-notes" rows="2" placeholder="Any special instructions…"></textarea>
+      </div>
+      <div id="finalize-modal-error" class="error-banner" style="display:none"></div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('finalize-modal')">Cancel</button>
+        <button class="btn-primary" id="finalize-submit-btn" onclick="submitFinalizePurchase()">Confirm Purchase</button>
       </div>
     </div>
   </div>

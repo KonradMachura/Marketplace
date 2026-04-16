@@ -86,6 +86,19 @@
 
       banner.style.display = 'none';
 
+      if (!username || !email || !password) {
+        banner.textContent = 'Username, email and password are required.';
+        banner.style.display = 'block';
+        return;
+      }
+
+      const emailRe = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
+      if (!emailRe.test(email)) {
+        banner.textContent = 'Please enter a valid email address (e.g. you@example.com).';
+        banner.style.display = 'block';
+        return;
+      }
+
       if (password !== confirm) {
         banner.textContent = 'Passwords do not match.';
         banner.style.display = 'block';

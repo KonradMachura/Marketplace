@@ -8,6 +8,8 @@ from routes.pages import pages_bp
 from routes.auth import auth_bp
 from routes.offers import offers_bp
 from routes.conversations import conv_bp
+from routes.purchases import purchases_bp
+from routes.complaints import complaints_bp
 
 # Absolute paths — works regardless of the working directory the app is launched from
 _BACKEND_DIR  = os.path.dirname(os.path.abspath(__file__))
@@ -37,6 +39,8 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(offers_bp)
     app.register_blueprint(conv_bp)
+    app.register_blueprint(purchases_bp)
+    app.register_blueprint(complaints_bp)
 
     return app
 

@@ -11,4 +11,6 @@ const state = {
   filters:        {},
   chatPoll:       null,
   selectedPhotos: [],
+  purchases:      [],
+  complaints:     [],
 };

@@ -7,6 +7,11 @@ function logout() {
   window.location.href = '/';
 }
 
+function goToProfile() {
+  document.getElementById('profile-dropdown').classList.remove('open');
+  window.location.href = '/profile';
+}
+
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function init() {
   const token = localStorage.getItem('token');

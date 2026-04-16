@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace – My Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/forms.css">
+  <link rel="stylesheet" href="/static/css/buttons.css">
+  <link rel="stylesheet" href="/static/css/navbar.css">
+  <link rel="stylesheet" href="/static/css/modals.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/profile.css">
+</head>
+<body class="profile-body">
+
+  <!-- ── NAVBAR ──────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-store"></i>
+      <span>Marketplace</span>
+    </div>
+    <div class="nav-actions">
+      <a href="/marketplace" class="nav-btn" style="text-decoration:none">
+        <i class="fa-solid fa-arrow-left"></i><span>Back to Marketplace</span>
+      </a>
+      <button class="nav-btn logout-btn" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Sign out</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ────────────────────────────────────────────────────────── -->
+  <main class="profile-main">
+    <div class="profile-container">
+
+      <!-- Tab bar -->
+      <div class="profile-tabs">
+        <button class="tab-btn active" data-tab="account">
+          <i class="fa-solid fa-user-gear"></i> Account
+        </button>
+        <button class="tab-btn" data-tab="purchases">
+          <i class="fa-solid fa-bag-shopping"></i> Purchase History
+        </button>
+        <button class="tab-btn" data-tab="complaints">
+          <i class="fa-solid fa-triangle-exclamation"></i> Complaints &amp; Returns
+        </button>
+      </div>
+
+      <!-- ── TAB 1: Account ─────────────────────────────────────────── -->
+      <div id="tab-account" class="tab-panel">
+
+        <div class="profile-since">
+          <i class="fa-solid fa-calendar-check"></i>
+          Member since <strong id="member-since">…</strong>
+        </div>
+
+        <!-- Profile info -->
+        <section class="profile-section">
+          <h3>Profile Information</h3>
+          <form id="profile-form" novalidate>
+            <div class="form-group">
+              <label for="p-username">Username <span class="req">*</span></label>
+              <div class="input-icon">
+                <i class="fa-regular fa-user"></i>
+                <input type="text" id="p-username" autocomplete="username" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="p-email">Email <span class="req">*</span></label>
+              <div class="input-icon">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="p-email" autocomplete="email" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="p-city">City <span class="optional">(optional)</span></label>
+              <div class="input-icon">
+                <i class="fa-solid fa-location-dot"></i>
+                <input type="text" id="p-city" autocomplete="address-level2">
+              </div>
+            </div>
+            <div id="profile-form-error"   class="error-banner"   style="display:none"></div>
+            <div id="profile-form-success" class="success-banner" style="display:none"></div>
+            <div class="form-footer">
+              <button type="submit" class="btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Change password -->
+        <section class="profile-section">
+          <h3>Change Password</h3>
+          <form id="password-form" novalidate>
+            <div class="form-group">
+              <label for="p-current-pw">Current Password <span class="req">*</span></label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="p-current-pw" autocomplete="current-password" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="p-new-pw">New Password <span class="req">*</span></label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="p-new-pw" placeholder="Min. 6 characters" autocomplete="new-password" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="p-confirm-pw">Confirm New Password <span class="req">*</span></label>
+              <div class="input-icon">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="p-confirm-pw" autocomplete="new-password" required>
+              </div>
+            </div>
+            <div id="password-form-error"   class="error-banner"   style="display:none"></div>
+            <div id="password-form-success" class="success-banner" style="display:none"></div>
+            <div class="form-footer">
+              <button type="submit" class="btn-primary">Change Password</button>
+            </div>
+          </form>
+        </section>
+
+      </div><!-- /tab-account -->
+
+      <!-- ── TAB 2: Purchases ───────────────────────────────────────── -->
+      <div id="tab-purchases" class="tab-panel" style="display:none">
+
+        <!-- List view -->
+        <div id="purchases-list-view">
+          <div class="section-header-row">
+            <h3>Purchase History</h3>
+            <span id="purchases-count" class="count-badge"></span>
+          </div>
+          <div id="purchases-list"></div>
+        </div>
+
+        <!-- Detail view -->
+        <div id="purchase-detail-view" style="display:none">
+          <div class="detail-nav">
+            <button class="btn-icon" onclick="showPurchaseList()" title="Back to list">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h3>Purchase Detail</h3>
+          </div>
+          <div id="purchase-detail-content"></div>
+        </div>
+
+      </div><!-- /tab-purchases -->
+
+      <!-- ── TAB 3: Complaints & Returns ────────────────────────────── -->
+      <div id="tab-complaints" class="tab-panel" style="display:none">
+
+        <div class="section-header-row">
+          <h3>Complaints &amp; Returns</h3>
+          <button class="btn-primary btn-sm" onclick="openComplaintModal()">
+            <i class="fa-solid fa-plus"></i> File a Complaint
+          </button>
+        </div>
+        <div id="complaints-list"></div>
+
+      </div><!-- /tab-complaints -->
+
+    </div><!-- /profile-container -->
+  </main>
+
+  <!-- ── COMPLAINT MODAL ──────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="complaint-modal" onclick="overlayClose(event,'complaint-modal')">
+    <div class="modal-box modal-narrow">
+      <button class="modal-close" onclick="closeModal('complaint-modal')">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <h3>File a Complaint / Return</h3>
+      <p class="modal-hint">Describe your issue. We will get back to you shortly.</p>
+      <form id="complaint-form" novalidate>
+        <div class="form-group">
+          <label for="c-purchase-id">Linked Purchase <span class="req">*</span></label>
+          <select id="c-purchase-id" required>
+            <option value="">Select a purchase…</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="c-type">Type <span class="req">*</span></label>
+          <select id="c-type" required>
+            <option value="">Select type…</option>
+            <option value="Complaint">Complaint</option>
+            <option value="Return">Return</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="c-description">Description <span class="req">*</span></label>
+          <textarea id="c-description" rows="4" placeholder="Describe your issue in at least 10 characters…" required></textarea>
+        </div>
+        <div id="complaint-form-error" class="error-banner" style="display:none"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal('complaint-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── TOAST ────────────────────────────────────────────────────────── -->
+  <div id="toast" class="toast"></div>
+
+  <script src="/static/js/state.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/utils.js"></script>
+  <script src="/static/js/ui.js"></script>
+  <script src="/static/js/profile.js"></script>
+</body>
+</html>

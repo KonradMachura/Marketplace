@@ -16,3 +16,8 @@ def register_page():
 @pages_bp.route('/marketplace')
 def marketplace_page():
     return render_template('marketplace.html')
+
+
+@pages_bp.route('/profile')
+def profile_page():
+    return render_template('profile.html')

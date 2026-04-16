@@ -23,10 +23,11 @@ class User(db.Model):
 
     def to_dict(self):
         return {
-            'id':       self.id,
-            'username': self.username,
-            'email':    self.email,
-            'city':     self.city,
+            'id':         self.id,
+            'username':   self.username,
+            'email':      self.email,
+            'city':       self.city,
+            'created_at': self.created_at.isoformat(),
         }
 
 
@@ -112,6 +113,10 @@ class Conversation(db.Model):
         else:
             preview = ''
 
+        has_purchase = db.session.execute(
+            db.select(Purchase).where(Purchase.conversation_id == self.id)
+        ).scalar_one_or_none() is not None
+
         return {
             'id':           self.id,
             'offer_id':     self.offer_id,
@@ -119,6 +124,7 @@ class Conversation(db.Model):
             'buyer_id':     self.buyer_id,
             'other_user':   self._other_user(current_user_id) if current_user_id else None,
             'last_message': preview,
+            'has_purchase': has_purchase,
             'created_at':   self.created_at.isoformat(),
         }
 
@@ -148,4 +154,72 @@ class Message(db.Model):
             'price_amount':    self.price_amount,
             'price_status':    self.price_status,
             'created_at':      self.created_at.isoformat(),
+        }
+
+
+class Purchase(db.Model):
+    __tablename__ = 'purchase'
+
+    id               = db.Column(db.Integer,     primary_key=True)
+    conversation_id  = db.Column(db.Integer,     db.ForeignKey('conversation.id'), nullable=False)
+    offer_id         = db.Column(db.Integer,     db.ForeignKey('offer.id'),        nullable=False)
+    buyer_id         = db.Column(db.Integer,     db.ForeignKey('user.id'),         nullable=False)
+    seller_id        = db.Column(db.Integer,     db.ForeignKey('user.id'),         nullable=False)
+    price_paid       = db.Column(db.Float,       nullable=False)
+    payment_method   = db.Column(db.String(50),  nullable=False)
+    delivery_method  = db.Column(db.String(50),  nullable=False)
+    delivery_address = db.Column(db.String(255), default='')
+    notes            = db.Column(db.Text,        default='')
+    status           = db.Column(db.String(50),  default='Completed')
+    created_at       = db.Column(db.DateTime,    default=datetime.utcnow)
+
+    buyer  = db.relationship('User', foreign_keys=[buyer_id])
+    seller = db.relationship('User', foreign_keys=[seller_id])
+    offer  = db.relationship('Offer')
+    conv   = db.relationship('Conversation')
+
+    def to_dict(self):
+        return {
+            'id':               self.id,
+            'conversation_id':  self.conversation_id,
+            'offer_id':         self.offer_id,
+            'offer_title':      self.offer.title if self.offer else 'Deleted offer',
+            'offer':            self.offer.to_dict() if self.offer else None,
+            'buyer_id':         self.buyer_id,
+            'seller_id':        self.seller_id,
+            'seller_username':  self.seller.username if self.seller else 'Unknown',
+            'price_paid':       self.price_paid,
+            'payment_method':   self.payment_method,
+            'delivery_method':  self.delivery_method,
+            'delivery_address': self.delivery_address,
+            'notes':            self.notes,
+            'status':           self.status,
+            'created_at':       self.created_at.isoformat(),
+        }
+
+
+class Complaint(db.Model):
+    __tablename__ = 'complaint'
+
+    id          = db.Column(db.Integer,    primary_key=True)
+    purchase_id = db.Column(db.Integer,    db.ForeignKey('purchase.id'), nullable=False)
+    user_id     = db.Column(db.Integer,    db.ForeignKey('user.id'),     nullable=False)
+    type        = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.Text,       nullable=False)
+    status      = db.Column(db.String(50), default='Open')
+    created_at  = db.Column(db.DateTime,   default=datetime.utcnow)
+
+    user     = db.relationship('User')
+    purchase = db.relationship('Purchase')
+
+    def to_dict(self):
+        return {
+            'id':          self.id,
+            'purchase_id': self.purchase_id,
+            'offer_title': self.purchase.offer.title if self.purchase and self.purchase.offer else 'Deleted offer',
+            'user_id':     self.user_id,
+            'type':        self.type,
+            'description': self.description,
+            'status':      self.status,
+            'created_at':  self.created_at.isoformat(),
         }
