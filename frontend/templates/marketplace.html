@@ -187,6 +187,14 @@
           <textarea id="of-description" rows="3" placeholder="Describe your item…"></textarea>
         </div>
         <div class="form-group">
+          <label>Attributes <span class="optional">(optional, up to 10)</span></label>
+          <div id="attr-rows"></div>
+          <button type="button" class="btn-secondary btn-sm" id="attr-add-btn"
+                  onclick="addAttributeRow()" style="margin-top:.4rem">
+            <i class="fa-solid fa-plus"></i> Add Attribute
+          </button>
+        </div>
+        <div class="form-group">
           <label>Photos <span class="optional">(up to 5)</span></label>
           <div class="photo-upload-area" onclick="document.getElementById('photo-input').click()">
             <i class="fa-solid fa-camera"></i>

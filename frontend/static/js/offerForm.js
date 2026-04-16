@@ -29,6 +29,38 @@ function removePhoto(i) {
   renderPhotoPreviews();
 }
 
+// ── Custom attribute rows ─────────────────────────────────────────────────────
+function addAttributeRow() {
+  const rows = document.querySelectorAll('#attr-rows .attr-row');
+  if (rows.length >= 10) return;
+
+  const idx       = Date.now();
+  const row       = document.createElement('div');
+  row.className   = 'form-row attr-row';
+  row.dataset.idx = idx;
+  row.innerHTML   = `
+    <div class="form-group" style="flex:1">
+      <input type="text" class="attr-key"   placeholder="Name (e.g. RAM)"    maxlength="50">
+    </div>
+    <div class="form-group" style="flex:1">
+      <input type="text" class="attr-value" placeholder="Value (e.g. 16 GB)" maxlength="100">
+    </div>
+    <button type="button" class="btn-icon" onclick="removeAttributeRow('${idx}')"
+            title="Remove" style="align-self:flex-end;margin-bottom:.4rem">
+      <i class="fa-solid fa-xmark"></i>
+    </button>`;
+  document.getElementById('attr-rows').appendChild(row);
+  document.getElementById('attr-add-btn').disabled =
+    document.querySelectorAll('#attr-rows .attr-row').length >= 10;
+}
+
+function removeAttributeRow(idx) {
+  const row = document.querySelector(`#attr-rows .attr-row[data-idx="${idx}"]`);
+  if (row) row.remove();
+  document.getElementById('attr-add-btn').disabled =
+    document.querySelectorAll('#attr-rows .attr-row').length >= 10;
+}
+
 // ── Add offer form submission ──────────────────────────────────────────────────
 async function submitOffer(e) {
   e.preventDefault();
@@ -53,6 +85,15 @@ async function submitOffer(e) {
   fd.append('condition',   document.getElementById('of-condition').value);
   fd.append('status',      document.getElementById('of-status').value);
   fd.append('city',        document.getElementById('of-city').value.trim());
+
+  const attrObj = {};
+  document.querySelectorAll('#attr-rows .attr-row').forEach(row => {
+    const key   = row.querySelector('.attr-key').value.trim();
+    const value = row.querySelector('.attr-value').value.trim();
+    if (key && value) attrObj[key] = value;
+  });
+  fd.append('attributes', JSON.stringify(attrObj));
+
   state.selectedPhotos.forEach(f => fd.append('photos', f));
 
   const btn     = document.getElementById('offer-submit-btn');
@@ -79,4 +120,6 @@ function resetOfferForm() {
   state.selectedPhotos = [];
   document.getElementById('photo-previews').innerHTML    = '';
   document.getElementById('offer-form-error').style.display = 'none';
+  document.getElementById('attr-rows').innerHTML = '';
+  document.getElementById('attr-add-btn').disabled = false;
 }

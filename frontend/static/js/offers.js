@@ -121,6 +121,16 @@ function openOfferDetail(o) {
       <dt>Condition</dt><dd>${escHtml(o.condition)}</dd>
     </dl>
     ${o.description ? `<div class="detail-desc">${escHtml(o.description)}</div>` : ''}
+    ${(() => {
+      const entries = o.attributes ? Object.entries(o.attributes) : [];
+      if (!entries.length) return '';
+      return `<dl class="detail-meta" style="margin-top:.75rem">
+        <dt colspan="2" style="font-weight:700;color:var(--text);grid-column:span 2;margin-bottom:.25rem">
+          <i class="fa-solid fa-list-ul fa-xs"></i> Attributes
+        </dt>
+        ${entries.map(([k, v]) => `<dt>${escHtml(k)}</dt><dd>${escHtml(v)}</dd>`).join('')}
+      </dl>`;
+    })()}
     <div class="modal-footer" style="margin-top:.75rem">${actionBtn}</div>`;
 
   openModal('detail-modal');

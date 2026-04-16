@@ -72,6 +72,20 @@ def create_offer():
             file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
             photos.append(f'/static/uploads/{filename}')
 
+    raw_attrs = (request.form.get('attributes') or '{}').strip()
+    try:
+        attr_dict = json.loads(raw_attrs)
+        attr_dict = {
+            str(k).strip(): str(v).strip()
+            for k, v in attr_dict.items()
+            if str(k).strip() and str(v).strip()
+        }
+        if len(attr_dict) > 10:
+            return jsonify({'error': 'Maximum 10 attributes allowed.'}), 400
+        attributes = json.dumps(attr_dict)
+    except (json.JSONDecodeError, ValueError):
+        attributes = '{}'
+
     offer = Offer(
         title       = title,
         owner_id    = uid,
@@ -82,6 +96,7 @@ def create_offer():
         status      = request.form.get('status',    'Active'),
         city        = (request.form.get('city')     or '').strip(),
         photos      = json.dumps(photos),
+        attributes  = attributes,
     )
     db.session.add(offer)
     db.session.commit()

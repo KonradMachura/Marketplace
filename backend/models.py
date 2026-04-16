@@ -45,6 +45,7 @@ class Offer(db.Model):
     status      = db.Column(db.String(50),  default='Active')
     city        = db.Column(db.String(100), default='')
     photos      = db.Column(db.Text,        default='[]')   # JSON list of URLs
+    attributes  = db.Column(db.Text,        default='{}')   # JSON dict of custom key-value pairs
 
     conversations = db.relationship(
         'Conversation',
@@ -57,6 +58,11 @@ class Offer(db.Model):
             photo_list = json.loads(self.photos) if self.photos else []
         except (json.JSONDecodeError, TypeError):
             photo_list = []
+
+        try:
+            attr_dict = json.loads(self.attributes) if self.attributes else {}
+        except (json.JSONDecodeError, TypeError):
+            attr_dict = {}
 
         return {
             'id':          self.id,
@@ -71,6 +77,7 @@ class Offer(db.Model):
             'status':      self.status,
             'city':        self.city,
             'photos':      photo_list,
+            'attributes':  attr_dict,
         }
 
 
